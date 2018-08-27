@@ -1,7 +1,7 @@
 <?php
 $servername = "localhost";
 $username = "root";
-$password = "root";
+$password = "";
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=mailer", $username, $password);
@@ -51,10 +51,11 @@ try {
     $var = '5';
 
     $stmt = $conn->query('SELECT id FROM users WHERE email=\'' . $_POST['rec'] . '\';');
-    $user = $stmt->fetch();
-    print_r($user);
+    $use = $stmt->fetch();
 
-    $mail->Body    = '<a href="http://localhost/phpmailer/index.php?id='.$user['0'].'">Cliquez ici</a>';
+    $user = hash('sha512', $use['0']);
+
+    $mail->Body    = '<a href="http://localhost/phpmailer/index.php?id='.$user.'">Cliquez ici</a>';
     $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
 
     $mail->send();
@@ -65,7 +66,7 @@ try {
 
 }
 
-    $stmt = $conn->query("SELECT id FROM users WHERE id=11");
+    $stmt = $conn->query("SELECT id FROM users WHERE id=1");
     $user = $stmt->fetch();
     $pl =  $user['id'];
 
@@ -78,13 +79,18 @@ try {
             //  $sql = "INSERT INTO users (name) VALUES ('Doe')";
             //  $conn->prepare($sql)->execute($data);
 
+            $sql = 'UPDATE users SET activate="1" WHERE id=\'' . $_GET['id'] . '\';';
+            $stmt = $conn->prepare($sql);
+            $stmt->execute();
+
         }else{
             echo 'echoue';
         }
     }
-
+    echo  hash('sha512', '1');
 
 ?>
+
 
 
  <!-- <p>Bonjour <?php echo $_GET['id']; ?> !</p>  -->
